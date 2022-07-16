@@ -1,18 +1,21 @@
 import pandas as pd
 import numpy as np
 import matplotlib.pyplot as plt
+from airplane_sat.data_prep.data_prep import load_data
 
-def feature_stats(data_dir):
+def feature_stats():
     ''' data: input features
         labels: output features
     '''
-    df = pd.read_csv(data_dir)
-
+    df = load_data("train.csv", "test.csv")
     classes = df['satisfaction'].unique()
+    df_pos =df.loc[df['satisfaction'] == classes[0]]
+    df_neg =df.loc[df['satisfaction'] == classes[1]]
     feature_names = list(df.columns)
-
+    feature_names.remove('satisfaction')
+    
     for feature in feature_names:
-        feature_categories = print(df[feature].unique())
+        feature_categories = df[feature].unique()
         x = np.arange(len(feature_categories))  # the label locations
         width = 0.35  # the width of the bars
 
@@ -21,9 +24,11 @@ def feature_stats(data_dir):
         postive_counts = []
         negative_counts = []
         if len(feature_categories) <= 5:
+            
             for feature_cat in feature_categories:
-                postive_counts.append(df.loc[(df[feature] == feature_cat) & (df['satisfaction'] == classes[0])].count())
-                negative_counts.append(df.loc[(df[feature] == feature_cat) & (df['satisfaction'] == classes[1])].count())
+                postive_counts.append(df_pos[feature].value_counts()[feature_cat])
+                negative_counts.append(df_neg[feature].value_counts()[feature_cat])
+
 
             fig, ax = plt.subplots()
             rects1 = ax.bar(x - width/2, postive_counts, width, label=classes[0])
@@ -32,12 +37,12 @@ def feature_stats(data_dir):
             # Add some text for labels, title and custom x-axis tick labels, etc.
             ax.set_ylabel('Number of Data Instances')
             ax.set_title('Category Counts of {} Feature by Satisfaction Class'.format(feature))
-            ax.set_xticks(x, feature_categories)
+            ax.set_xticks(x)
+            ax.set_xticklabels(feature_categories)
             ax.legend()
 
-            ax.bar_label(rects1, padding=3)
-            ax.bar_label(rects2, padding=3)
-
             fig.tight_layout()
+            title = feature.replace("/", "_")
+            plt.savefig("feature_{}_category_distrubtions.png".format(title))
 
-            plt.savefig("feature_{}_category_distrubtions.png".format(feature))
+feature_stats()

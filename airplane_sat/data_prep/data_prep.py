@@ -1,21 +1,29 @@
 import pandas as pd
 import numpy as np
+import zipfile 
 
-def load_data(data_dir):
+def upzip():
+    ''' 
+    Unzips test and train data from Airline_Passanger_Satification zip file
+    '''
+    zip = zipfile.ZipFile('../../Airline_Passenger_Satisfaction_dataset.zip')
+    zip.extractall()
+
+
+def load_data(train_data_dir, test_data_dir):
     ''' data: input features
         labels: output features
     '''
-    df = pd.read_csv(data_dir)
+    df1 = pd.read_csv(train_data_dir)
+    df2 = pd.read_csv(test_data_dir)
+    df = pd.concat([df1, df2])
     #id is not a feature, just a way to track user input
     df.drop('id', axis=1, inplace=True)
-    #data entry number is also not a feature
-    df.drop('#', axis=1, inplace=True)
+    df.drop('Unnamed: 0', axis=1, inplace=True)
+    return df 
 
-    info = np.genfromtxt(data_dir, delimiter=',')[1:, :]
-    data = info[:, :-1]
-    labels = info[:, -1:]
-    
-    return data, labels
+load_data("train.csv", "test.csv")
+
 
 def normalize_data(data_dir):
     ''' data: input features
