@@ -84,7 +84,7 @@ def naive_bayes_from_scratch():
     print("The precision of the test is {} and the recall is {}".format(precision, recall))
 
     #What is the F1 score?
-    F1 = (2*precision*recall)/(precision + recall)
-    print("The F1 score is {}".format(F1 ))
+    f1 = (2*precision*recall)/(precision + recall)
+    print("The F1 score is {}".format(f1 ))
 
 naive_bayes_from_scratch()
