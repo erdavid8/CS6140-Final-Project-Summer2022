@@ -4,8 +4,8 @@ import matplotlib.pyplot as plt
 from airplane_sat.data_prep.data_prep import load_data
 
 def feature_stats():
-    ''' data: input features
-        labels: output features
+    ''' 
+        Creates disrtubtion graphs for the features which are categorical
     '''
     df = load_data("train.csv", "test.csv")
     classes = df['satisfaction'].unique()

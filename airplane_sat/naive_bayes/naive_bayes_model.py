@@ -12,6 +12,9 @@ def naive_bayes(x_train, y_train, x_test, y_test):
     
 
 def naive_bayes_from_scratch():
+    ''' 
+        Implements Naive Bayes with features which are categorical
+    '''
     category_features = ['Gender', 'Customer Type', 'Type of Travel', \
         'Class', 'Inflight wifi service', 'Departure/Arrival time convenient', \
             'Ease of Online booking', 'Gate location', 'Food and drink', \
@@ -22,7 +25,9 @@ def naive_bayes_from_scratch():
 
     #Use naive bayes to predict is the following customer will buy a computer
     #Dont use Laplace Smoothing
-    df_train, df_test = load_seperate_data("train.csv", "test.csv")
+    df_train =pd.read_csv("train.csv")
+    
+    df_test = pd.read_csv("test.csv")
 
     #split df for each class
     class_df = []
@@ -36,20 +41,21 @@ def naive_bayes_from_scratch():
     probabilities = np.zeros((len(classes), len(category_features)))
     #how likily that class is to be choosen
     class_probabilities = np.asarray([df_pos.shape[0]/N, df_neg.shape[0]/N])
-    count = 0
+    
     TP = 0
     TN = 0
     FP = 0
     FN = 0
-
-    for test_sample in df_test.rows:
+    df_test = df_test.head(1000)
+    for _, test_sample in df_test.iterrows():
+        count = 0
         #for each class
         for class_data in class_df:
             class_size = class_data.shape[0]
             #for each feature
             for feature_index in range(len(category_features)):
                 feature_title = category_features[feature_index]
-                sample_value = test_sample.iloc[feature_title]
+                sample_value = test_sample[feature_title]
                 instances = class_data.loc[class_data[feature_title] == sample_value].count()[0]
                 probabilities[count][feature_index] = instances/class_size
             count += 1
@@ -64,7 +70,7 @@ def naive_bayes_from_scratch():
         #Which Class Has the Highest Likelihood?
         best_match_index = np.argmax(class_likelihood)
         match = classes[best_match_index]
-        if match == test_sample.iloc['satisfaction']:
+        if match == test_sample.loc['satisfaction']:
             if best_match_index == 0:
                 TP += 1
             else:
@@ -75,15 +81,14 @@ def naive_bayes_from_scratch():
             else:
                 FN += 1
                 
-
+    print("TP {} TN {} FP {} FN {}".format(TP, TN, FP, FN))
     accuracy = (TP + TN) / (TP + TN + FP + FN)
     print("The accurary of the test is {}".format(accuracy))
 
-    precision =  TP / TP + FP
-    recall =  TP / TP + FN
+    precision =  TP / (TP + FP)
+    recall =  TP / (TP + FN)
     print("The precision of the test is {} and the recall is {}".format(precision, recall))
 
-    #What is the F1 score?
     f1 = (2*precision*recall)/(precision + recall)
     print("The F1 score is {}".format(f1 ))
 
