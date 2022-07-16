@@ -5,6 +5,11 @@ def load_data(data_dir):
     ''' data: input features
         labels: output features
     '''
+    df = pd.read_csv(data_dir)
+    #id is not a feature, just a way to track user input
+    df.drop('id', axis=1, inplace=True)
+    #data entry number is also not a feature
+    df.drop('#', axis=1, inplace=True)
 
     info = np.genfromtxt(data_dir, delimiter=',')[1:, :]
     data = info[:, :-1]
