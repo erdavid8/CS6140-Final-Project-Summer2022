@@ -13,9 +13,10 @@ def feature_stats():
     df_neg =df.loc[df['satisfaction'] == classes[1]]
     feature_names = list(df.columns)
     feature_names.remove('satisfaction')
-    
+    category_features = []
     for feature in feature_names:
         feature_categories = df[feature].unique()
+        
         x = np.arange(len(feature_categories))  # the label locations
         width = 0.35  # the width of the bars
 
@@ -23,11 +24,18 @@ def feature_stats():
         #for this kind of inital analysis
         postive_counts = []
         negative_counts = []
-        if len(feature_categories) <= 5:
-            
+        if len(feature_categories) <= 10:
+
+            category_features.append(feature)
             for feature_cat in feature_categories:
-                postive_counts.append(df_pos[feature].value_counts()[feature_cat])
-                negative_counts.append(df_neg[feature].value_counts()[feature_cat])
+                if feature_cat in df_pos[feature].unique():
+                    postive_counts.append(df_pos[feature].value_counts()[feature_cat])
+                else:
+                    postive_counts.append(0)
+                if feature_cat in df_neg[feature].unique():
+                    negative_counts.append(df_neg[feature].value_counts()[feature_cat])
+                else:
+                    negative_counts.append(0)
 
 
             fig, ax = plt.subplots()
@@ -44,5 +52,5 @@ def feature_stats():
             fig.tight_layout()
             title = feature.replace("/", "_")
             plt.savefig("feature_{}_category_distrubtions.png".format(title))
-
+    print(category_features)
 feature_stats()
