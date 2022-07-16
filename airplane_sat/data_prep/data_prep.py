@@ -24,6 +24,16 @@ def load_data(train_data_dir, test_data_dir):
 
 load_data("train.csv", "test.csv")
 
+def load_seperate_data(train_data_dir, test_data_dir):
+    ''' data: input features
+        labels: output features
+    '''
+    df1 = pd.read_csv(train_data_dir)
+    df2 = pd.read_csv(test_data_dir)
+    #id is not a feature, just a way to track user input
+    df1.drop('id', axis=1, inplace=True)
+    df1.drop('Unnamed: 0', axis=1, inplace=True)
+    return df1, df2
 
 def normalize_data(data_dir):
     ''' data: input features

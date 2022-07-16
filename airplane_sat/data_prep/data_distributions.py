@@ -27,6 +27,8 @@ def feature_stats():
         if len(feature_categories) <= 10:
 
             category_features.append(feature)
+            if not isinstance(feature_categories, int):
+                feature_categories.sort()
             for feature_cat in feature_categories:
                 if feature_cat in df_pos[feature].unique():
                     postive_counts.append(df_pos[feature].value_counts()[feature_cat])
