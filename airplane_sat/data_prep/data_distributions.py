@@ -20,7 +20,7 @@ def feature_stats(data_dir):
         #for this kind of inital analysis
         postive_counts = []
         negative_counts = []
-        if len(feature_categories) <10:
+        if len(feature_categories) <= 5:
             for feature_cat in feature_categories:
                 postive_counts.append(df.loc[(df[feature] == feature_cat) & (df['satisfaction'] == classes[0])].count())
                 negative_counts.append(df.loc[(df[feature] == feature_cat) & (df['satisfaction'] == classes[1])].count())
