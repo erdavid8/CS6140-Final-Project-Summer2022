@@ -10,7 +10,7 @@ def naive_bayes(x_train, y_train, x_test, y_test):
     get_model_report(gnb, x_test, y_test, \
     confusion_matrix_name="naive_bayes_confusion", classification_report_name="naive_bayes_classification_report")
     
-
+# TOP 1000 results
 def naive_bayes_from_scratch():
     ''' 
         Implements Naive Bayes with features which are categorical

@@ -33,6 +33,8 @@ def load_seperate_data(train_data_dir, test_data_dir):
     #id is not a feature, just a way to track user input
     df1.drop('id', axis=1, inplace=True)
     df1.drop('Unnamed: 0', axis=1, inplace=True)
+    df2.drop('id', axis=1, inplace=True)
+    df2.drop('Unnamed: 0', axis=1, inplace=True)
     return df1, df2
 
 def normalize_data(data_dir):
