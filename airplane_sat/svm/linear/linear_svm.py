@@ -36,7 +36,7 @@ def plot_3D_SVM(model, X, Y):
         Plot contour of 3D SVM 
     '''
     
-    z = lambda x,y: (-clf.intercept_[0]-clf.coef_[0][0]*x -clf.coef_[0][1]*y) / clf.coef_[0][2]
+    z = lambda x,y: (-model.intercept_[0]-model.coef_[0][0]*x -model.coef_[0][1]*y) / model.coef_[0][2]
 
     tmp = np.linspace(-5,5,30)
     x,y = np.meshgrid(tmp,tmp)
@@ -54,6 +54,7 @@ def svm_linear(x_train, y_train, x_test, y_test, feature_names):
 
     #get stats
     accuracy,recall, precision, f1 = get_stats(clf, x_test, y_test)
+    print('Accuracy {:.4f}, Recall {:.4f}, Precision {:.4f}, F1 {:.4f}'.format(accuracy,recall, precision, f1))
 
     #plot 2D feature
     if len(feature_names) == 2:
@@ -81,8 +82,8 @@ def svm_linear(x_train, y_train, x_test, y_test, feature_names):
         ax.plot_surface(x, y, z(x,y))
         ax.view_init(30, 60)
         title = "3D Linear SVM with Features: {}, {} and {}".format(feature_names[0], feature_names[1], feature_names[2])
-        ax.set_title(title)
-        plt.suptitle('Accuracy {}, Recall {}, Precision {}, F1 {}'.format(accuracy,recall, precision, f1))
+        ax.set_title(title, fontsize=8)
+        plt.suptitle('Accuracy {:.4f}, Recall {:.4f}, Precision {:.4f}, F1 {:.4f}'.format(accuracy,recall, precision, f1), fontsize=8)
         plt.savefig("{}.png".format(title))
 
     
@@ -104,9 +105,9 @@ def svm_linear_2Features():
 
 
     #based off of initial distrubtions, these categories naively seem most likely to not be noisy
-    #try all combinations
+    #try all combinations, 
     category_to_try = ['Seat comfort', 'Online boarding', 'Leg room service', 'Inflight service', \
-        'Inflight entertainment', 'Inflight wifi service','Flight Distance', 'Age']
+        'Inflight entertainment', 'Inflight wifi service']
 
     combos = itertools.combinations(category_to_try, 2)
     combo_results = []
@@ -124,12 +125,22 @@ def svm_linear_2Features():
         combo_features = combo_results[i].features
         print("The {}th best combo is {} and {}".format(i, combo_features[0], combo_features[1]))
     
-svm_linear_2Features()
+# svm_linear_2Features()
 
 def svm_linear_3Features():
     ''' 
         Trains and evaluates a linear svm with 3 features
     '''
+    # The 1th best combo is Seat comfort , Inflight service and Inflight entertainment
+    # The 2th best combo is Seat comfort , Inflight entertainment and Inflight wifi service
+    # The 3th best combo is Leg room service , Inflight service and Inflight wifi service
+    # The 4th best combo is Inflight service , Inflight entertainment and Inflight wifi service
+    # The 5th best combo is Leg room service , Inflight service and Inflight entertainment
+    # The 6th best combo is Seat comfort , Leg room service and Inflight service
+    # The 7th best combo is Seat comfort , Leg room service and Inflight entertainment
+    # The 8th best combo is Leg room service , Inflight entertainment and Inflight wifi service
+    # The 9th best combo is Seat comfort , Leg room service and Inflight wifi service
+
     #prep data
     df_train, df_test = load_seperate_data("train.csv", "test.csv")
     classes = df_train['satisfaction'].unique()
@@ -143,7 +154,7 @@ def svm_linear_3Features():
     #based off of initial distrubtions, these categories naively seem most likely to not be noisy
     #try all combinations
     category_to_try = ['Seat comfort', 'Online boarding', 'Leg room service', 'Inflight service', \
-        'Inflight entertainment', 'Inflight wifi service','Flight Distance', 'Age']
+        'Inflight entertainment', 'Inflight wifi service']
 
     combos = itertools.combinations(category_to_try, 3)
     combo_results = []
@@ -162,10 +173,26 @@ def svm_linear_3Features():
         print("The {}th best combo is {} , {} and {}".format(i, combo_features[0], combo_features[1], combo_features[2]))
     
 
+# svm_linear_3Features()
+
 def svm_linear_AllFeatures():
     ''' 
         Trains and evaluates a linear svm with all features
     '''
+     #prep data
+    df_train, df_test = load_seperate_data("train.csv", "test.csv")
+    classes = df_train['satisfaction'].unique()
+    sat = {classes[0]: 1,classes[1]: 0}
+    df_train['satisfaction'] = [sat[item] for item in df_train['satisfaction']]
+    df_test['satisfaction'] = [sat[item] for item in df_test['satisfaction']]
+    y_train = df_train['satisfaction'].to_numpy()
+    y_test = df_test['satisfaction'].to_numpy()
+
     #based off of initial distrubtions, these categories naively seem most likely to not be noisy
     category_to_try = ['Seat comfort', 'Online boarding', 'Leg room service', 'Inflight service', \
-        'Inflight entertainment', 'Inflight wifi service','Flight Distance', 'Age']
+        'Inflight entertainment', 'Inflight wifi service']
+    x_train = df_train[category_to_try ].to_numpy()
+    x_test = df_test[category_to_try ].to_numpy()
+    svm_linear(x_train, y_train, x_test, y_test, category_to_try )
+
+svm_linear_AllFeatures()

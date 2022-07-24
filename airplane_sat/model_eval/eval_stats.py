@@ -36,9 +36,9 @@ def get_stats(model, x_test, y_test, labels=None):
     labels: if classification is not binary, provide labels here
     '''
     #test paramaters
-    y_pred = model.predict()
+    y_pred = model.predict(x_test)
     recall = recall_score(y_test, y_pred, labels=labels, average='weighted')
     accuracy = accuracy_score(y_test, y_pred)
     precision = precision_score(y_test, y_pred, labels=labels, average='weighted')
-    f1_score = f1_score(y_test, y_pred,labels=labels)
-    return accuracy,recall, precision, f1_score
+    f1 = f1_score(y_test, y_pred,labels=labels)
+    return accuracy,recall, precision, f1
